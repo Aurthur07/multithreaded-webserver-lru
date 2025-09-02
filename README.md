@@ -1,119 +1,85 @@
-Multi Threaded Proxy Server with LRU Cache
+<h1>Multi Threaded Proxy Server with and without Cache</h1>
 
-This project is implemented in C and extends a basic proxy server by adding multi-threading and an LRU (Least Recently Used) caching mechanism for improved performance and concurrency. The HTTP request parsing logic is adapted from Proxy Server
-.
+This project is implemented using `C` and Parsing of HTTP referred from <a href = "https://github.com/vaibhavnaagar/proxy-server"> Proxy Server </a>
 
-Index
 
-Project Theory
+## Index
 
-How to Run
+- [Project Theory](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient#project-theory)
+- [How to Run](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient#How-to-Run)
+- [Demo](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient#Demo)
+- [Contributing](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient#contributing)
 
-Demo
+## Project Theory
 
-Contributing
+[[Back to top]](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient#index)
 
-Project Theory
+##### Introduction
 
-[Back to top]
+##### Basic Working Flow of the Proxy Server:
+![](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient/blob/main/pics/UML.JPG)
 
-Introduction
+##### How did we implement Multi-threading?
+- Used Semaphore instead of Condition Variables and pthread_join() and pthread_exit() function. 
+- pthread_join() requires us to pass the thread id of the the thread to wait for. 
+- Semaphore’s sem_wait() and sem_post() doesn’t need any parameter. So it is a better option. 
 
-A proxy server acts as an intermediary between a client and the destination server. This project enhances the proxy with multi-threading (to serve multiple clients concurrently) and an LRU cache (to reduce repeated network calls and improve speed).
 
-Working Flow of the Proxy Server
+##### Motivation/Need of Project
+- To Understand → 
+  - The working of requests from our local computer to the server.
+  - The handling of multiple client requests from various clients.
+  - Locking procedure for concurrency.
+  - The concept of cache and its different functions that might be used by browsers.
+- Proxy Server do → 
+  - It speeds up the process and reduces the traffic on the server side.
+  - It can be used to restrict user from accessing specific websites.
+  - A good proxy will change the IP such that the server wouldn’t know about the client who sent the request.
+  - Changes can be made in Proxy to encrypt the requests, to stop anyone accessing the request illegally from your client.
+ 
+##### OS Component Used ​
+- Threading
+- Locks 
+- Semaphore
+- Cache (LRU algorithm is used in it)
 
-Client sends a request to the proxy.
+##### Limitations ​
+- If a URL opens multiple clients itself, then our cache will store each client’s response as a separate element in the linked list. So, during retrieval from the cache, only a chunk of response will be send and the website will not open
+- Fixed size of cache element, so big websites may not be stored in cache. 
 
-Proxy checks the cache (using LRU policy).
+##### How this project can be extended? ​
+- This code can be implemented using multiprocessing that can speed up the process with parallelism.
+- We can decide which type of websites should be allowed by extending the code.
+- We can implement requests like POST with this code.
 
-If data is present (cache hit), it is returned immediately.
 
-If not (cache miss), the proxy fetches the data from the remote server, stores it in the cache, and returns it to the client.
+# Note :-
+- Code is well commented. For any doubt you can refer to the comments.
 
-How Multi-threading is Implemented
 
-Used POSIX threads (pthread_create) for handling multiple clients concurrently.
+## How to Run
 
-Synchronization is handled using semaphores for locking shared resources.
-
-Semaphores are preferred over condition variables in this case since sem_wait() and sem_post() do not require specific thread IDs, making them simpler and more efficient.
-
-Motivation / Need of the Project
-
-To understand:
-
-The flow of HTTP requests and responses.
-
-Handling concurrent connections.
-
-Implementing cache management in networking.
-
-Benefits of proxy servers:
-
-Reduce server load and improve response time.
-
-Restrict or filter website access.
-
-Hide client IP from servers.
-
-Enable request encryption for security.
-
-OS Components Used
-
-Threads – for concurrent client handling.
-
-Semaphores – for synchronization.
-
-Locks – to prevent race conditions.
-
-Cache – implemented with LRU eviction policy.
-
-Limitations
-
-Large responses may not fit in cache due to fixed cache size.
-
-If a URL spawns multiple client responses, only partial content may be cached.
-
-Future Extensions
-
-Implement multiprocessing for even faster request handling.
-
-Add access control to block/allow certain websites.
-
-Extend to handle POST requests.
-
-Enhance caching strategy to support larger websites and persistent storage.
-
-How to Run
-$ git clone https://github.com/<your-username>/<your-repo-name>.git
-$ cd <your-repo-name>
+```bash
+$ git clone https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient.git
+$ cd MultiThreadedProxyServerClient
 $ make all
-$ ./proxy <port>
+$ ./proxy <port no.>
+```
+`Open http://localhost:port/https://www.cs.princeton.edu/`
 
+# Note:
+- This code can only be run in Linux Machine. Please disable your browser cache.
+- To run the proxy without cache Change the name of the file (`proxy_server_with_cache.c to proxy_server_without_cache.c`) MakeFile.
 
-Open in browser:
+## Demo
+![](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient/blob/main/pics/cache.png)
+- When website is opened for the first time (`url not found`) then cache will be miss.
+- Then if you again open that website again then `Data is retrieved from the cache` will be printed.
 
-http://localhost:<port>/https://www.cs.princeton.edu/
+## Contributing
 
+[[Back to top]](https://github.com/Lovepreet-Singh-LPSK/MultiThreadedProxyServerClient#index)
 
-Notes:
+Feel free to add some useful. You can see `How this code can be extended`. Use ideas from there and feel free to fork and CHANGE. 
 
-Works only on Linux.
-
-Disable your browser’s own cache to observe proxy caching.
-
-To run the proxy without cache, rename proxy_server_with_cache.c to proxy_server_without_cache.c in the Makefile.
-
-Demo
-
-On first request to a website → Cache Miss (data fetched from server).
-
-On subsequent requests → Cache Hit (data served from proxy cache).
-
-Contributing
-
-[Back to top]
-
-Contributions are welcome! Check out Future Extensions
- for ideas, fork the repo, and submit a pull request.
+#### Enjoy CODE and pull requests are highly appreciated.
