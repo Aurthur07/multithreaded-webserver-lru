@@ -2,7 +2,7 @@
 
 A high-performance, multi-threaded HTTP proxy server implementation in C, featuring intelligent caching mechanisms and concurrent request handling.
 
----
+----
 
 ## Table of Contents
 
